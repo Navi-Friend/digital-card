@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id          Int      @id() @default(autoincrement())
+  name        String   @unique()
+  description String
+  links       String[]
+  skills      String[]
+
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt() @map("updated_at")
+  experiences Experience[]
+  projects    Project[]
+
+  @@map("profile")
+}
+
+model Company {
+  id          Int    @id() @default(autoincrement())
+  name        String @unique()
+  description String
+
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt() @map("updated_at")
+  experiences Experience[]
+  projects    Project[]
+
+  @@map("company")
+}
+
+model Project {
+  id          Int      @id() @default(autoincrement())
+  name        String   @unique()
+  description String
+  links       String[]
+
+  companyId Int     @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+
+  profileId Int     @map("profile_id")
+  profile   Profile @relation(fields: [profileId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  @@map("project")
+}
+
+model Experience {
+  id           Int       @id() @default(autoincrement())
+  position     String
+  start        DateTime
+  end          DateTime?
+  achievements String[]
+
+  companyId Int     @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+
+  profileId Int     @map("profile_id")
+  profile   Profile @relation(fields: [profileId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  @@map("experience")
+}

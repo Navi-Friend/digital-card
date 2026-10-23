@@ -1,0 +1,47 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Experience {
+  achievements: [String!]!
+  createdAt: DateTime!
+  end: DateTime
+  id: Int!
+  position: String!
+  start: DateTime!
+  updatedAt: DateTime!
+}
+
+type Profile {
+  createdAt: DateTime!
+  description: String!
+  experiences: [Experience!]!
+  id: Int!
+  links: [String!]!
+  name: String!
+  projects: [Project!]!
+  skills: [String!]!
+  updatedAt: DateTime!
+}
+
+type Project {
+  createdAt: DateTime!
+  description: String!
+  id: Int!
+  links: [String!]!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type Query {
+  """Return user's profile"""
+  profile(id: Int!): Profile!
+
+  """Return all profiles"""
+  profiles: [Profile!]!
+}
