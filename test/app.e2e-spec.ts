@@ -1,13 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
-    let app: INestApplication<App>;
+describe('Digital Card API (e2e)', () => {
+    let app: INestApplication;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -16,10 +15,80 @@ describe('AppController (e2e)', () => {
         await app.init();
     });
 
-    it('/ (GET)', () => {
-        return request(app.getHttpServer())
+    afterAll(async () => {
+        await app.close();
+    });
+
+    it('returns a health status', async () => {
+        await request(app.getHttpServer())
             .get('/')
             .expect(200)
-            .expect('Hello World!');
+            .expect(({ body }: { body: Record<string, string> }) => {
+                expect(body.status).toBe('ok');
+                expect(new Date(body.dateTime).toISOString()).toBe(
+                    body.dateTime,
+                );
+            });
+    });
+
+    it('returns the profile and requested nested data through GraphQL', async () => {
+        const query = `
+            query {
+                profile {
+                    name
+                    skills
+                    experiences {
+                        position
+                        company {
+                            name
+                        }
+                    }
+                    projects {
+                        name
+                        link
+                    }
+                }
+            }
+        `;
+
+        await request(app.getHttpServer())
+            .post('/graphql')
+            .send({ query })
+            .expect(200)
+            .expect(
+                ({
+                    body,
+                }: {
+                    body: {
+                        data?: {
+                            profile?: {
+                                name: string;
+                                skills: string[];
+                                experiences: Array<{
+                                    position: string;
+                                    company: { name: string };
+                                }>;
+                                projects: Array<{
+                                    name: string;
+                                    link: string;
+                                }>;
+                            };
+                        };
+                        errors?: unknown[];
+                    };
+                }) => {
+                    expect(body.errors).toBeUndefined();
+                    expect(body.data?.profile?.name).toBeTruthy();
+                    expect(body.data?.profile?.skills.length).toBeGreaterThan(
+                        0,
+                    );
+                    expect(
+                        body.data?.profile?.experiences.length,
+                    ).toBeGreaterThan(0);
+                    expect(
+                        body.data?.profile?.experiences[0]?.company.name,
+                    ).toBeTruthy();
+                },
+            );
     });
 });

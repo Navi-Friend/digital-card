@@ -60,6 +60,26 @@ npm run start:dev
 `DATABASE_URL` с хостом `postgres`: это имя доступно только внутри Docker
 сети.
 
+## Тестирование
+
+Unit-тесты используют моки Prisma и проверяют получение
+профиля, обработку отсутствующего профиля и batch-загрузку DataLoader без
+подключения к базе данных:
+
+```bash
+npm test
+```
+
+E2E-тесты запускают NestJS-приложение и проверяют health endpoint и
+GraphQL-запрос `profile` с вложенными `experiences`, компаниями и проектами.
+Для них требуется локальный PostgreSQL и настроенный `.env.local`:
+
+```bash
+npm run db:migrate
+npm run db:seed
+npm run test:e2e
+```
+
 ## GraphQL API
 
 API предоставляет один query `profile`, потому что приложение представляет
