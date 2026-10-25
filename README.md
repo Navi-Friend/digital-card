@@ -18,30 +18,19 @@ Backend цифровой визитки на NestJS, Prisma, PostgreSQL и Graph
 
 ```bash
 cp .env.example .env
-docker compose up --build
+docker compose up -d --build
 ```
 
 После запуска:
 
-- API и Apollo Sandbox: <http://localhost:3000/graphql>
+- GraphQL API и Apollo Sandbox: <http://localhost:3000/graphql>
 - health endpoint: <http://localhost:3000/>
+
+Apollo Sandbox открывается по адресу `/graphql`. В нём можно
+выполнить запрос `profile` и получить профиль, навыки, опыт работы, компании и проекты.
 
 Контейнер приложения выполняет `prisma migrate deploy`, затем
 `prisma db seed`, и только после этого запускает NestJS.
-
-## Локальный запуск
-
-Установите зависимости и запустите PostgreSQL:
-
-```bash
-npm ci
-npm run db:generate
-npm run db:migrate
-npm run db:seed
-npm run start:dev
-```
-
-Переменные окружения перечислены в `.env.example`.
 
 ## GraphQL API
 
@@ -50,36 +39,33 @@ API предоставляет один query `profile`, потому что п�
 
 ```graphql
 query {
-  profile {
-    name
-    description
-    links
-    skills
-    experiences {
-      company {
+    profile {
         name
-      }
-      position
-      start
-      end
-      achievements
+        description
+        links
+        skills
+        experiences {
+            company {
+                name
+            }
+            position
+            start
+            end
+            achievements
+        }
+        projects {
+            name
+            link
+        }
     }
-    projects {
-      name
-      link
-    }
-  }
 }
 ```
 
 `skills` оставлены как `[String!]!`, а не отдельная сущность GraphQL. Для
 визитки это простое значение без дополнительных атрибутов: уровня, порядка,
-категории или связи с несколькими профилями. Отдельная модель понадобилась бы
-при появлении такой бизнес-логики.
+категории или связи с несколькими профилями. Отдельная модель понадобилась бы при появлении такой бизнес-логики.
 
-GraphQL-модели отделены от Prisma-моделей. В публичной схеме компания доступна
-только как часть `Experience`; внутренние `companyId`, `profileId` и служебные
-поля связей не публикуются.
+GraphQL-модели отделены от Prisma-моделей. В публичной схеме компания доступна только как часть `Experience`; внутренние `companyId`, `profileId` и служебные поля связей не публикуются.
 
 ## Данные и seed
 
