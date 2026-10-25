@@ -3,9 +3,12 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { ConfigService } from '@nestjs/config';
 import { join } from 'node:path';
 import { GraphQLFormattedError } from 'graphql';
+import { PrismaService } from '../infrastructure/prisma/prisma.service';
+import { createProfileLoaders } from '../profile/profile.loaders';
 
 export function configureGraphql(
     config: ConfigService,
+    prismaService: PrismaService,
 ): Omit<ApolloDriverConfig, 'driver'> {
     return {
         graphiql: false,
@@ -21,6 +24,9 @@ export function configureGraphql(
         autoTransformHttpErrors: true,
         sortSchema: true,
         introspection: true,
+        context: () => ({
+            loaders: createProfileLoaders(prismaService),
+        }),
         formatError: (formattedError) => formatGQLError(formattedError, config),
     };
 }
