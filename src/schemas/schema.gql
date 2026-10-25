@@ -9,12 +9,19 @@ scalar DateTime
 
 type Experience {
   achievements: [String!]!
+  company: Company!
   createdAt: DateTime!
   end: DateTime
   id: Int!
   position: String!
   start: DateTime!
   updatedAt: DateTime!
+}
+
+type Company {
+  description: String!
+  id: Int!
+  name: String!
 }
 
 type Profile {
@@ -33,15 +40,12 @@ type Project {
   createdAt: DateTime!
   description: String!
   id: Int!
-  links: [String!]!
+  link: String!
   name: String!
   updatedAt: DateTime!
 }
 
 type Query {
   """Return user's profile"""
-  profile(id: Int!): Profile!
-
-  """Return all profiles"""
-  profiles: [Profile!]!
+  profile: Profile!
 }

@@ -11,8 +11,8 @@ export class Project {
     @Field()
     description: string;
 
-    @Field(() => [String])
-    links: string[];
+    @Field()
+    link: string;
 
     @Field()
     createdAt: Date;

@@ -5,26 +5,20 @@ import { PrismaService } from '../infrastructure/prisma/prisma.service';
 export class ProfileService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async findAll() {
-        return this.prismaService.profile.findMany({
+    async findOne() {
+        const profile = await this.prismaService.profile.findFirst({
             include: {
-                experiences: true,
-                projects: true,
-            },
-        });
-    }
-
-    async findOne(id: number) {
-        const profile = await this.prismaService.profile.findUnique({
-            where: { id },
-            include: {
-                experiences: true,
+                experiences: {
+                    include: {
+                        company: true,
+                    },
+                },
                 projects: true,
             },
         });
 
         if (!profile) {
-            throw new NotFoundException(`Profile with id ${id} is not found`);
+            throw new NotFoundException('Profile is not found');
         }
 
         return profile;
