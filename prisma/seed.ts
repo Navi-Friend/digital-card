@@ -44,7 +44,7 @@ export async function seedDatabase(prisma: PrismaClient) {
             },
             projects: {
                 deleteMany: {},
-                create: projects(flowByte.id, degtiarov.id),
+                create: projects(),
             },
         },
         create: {
@@ -56,7 +56,7 @@ export async function seedDatabase(prisma: PrismaClient) {
                 create: experiences(flowByte.id, degtiarov.id),
             },
             projects: {
-                create: projects(flowByte.id, degtiarov.id),
+                create: projects(),
             },
         },
     });
@@ -124,28 +124,49 @@ function experiences(flowByteCompanyId: number, degtiarovCompanyId: number) {
     ];
 }
 
-function projects(flowByteCompanyId: number, degtiarovCompanyId: number) {
+function projects() {
     return [
         {
             name: 'Corporate CRM/ERP System',
             description:
                 'Enterprise-grade solution with a real-time WebSocket messenger, granular RBAC, and optimized data processing.',
             link: 'https://erp.fercstroy.com/',
-            company: { connect: { id: flowByteCompanyId } },
         },
         {
             name: 'Web site for the transfer company',
             description:
                 'Node.js/TypeScript backend, React frontend, JWT authentication, and modular REST API design.',
             link: 'https://transfer24.by/',
-            company: { connect: { id: flowByteCompanyId } },
         },
         {
             name: 'Meetings / Dating Web Platform MVP',
             description:
                 'MVP of the meeting / dating platofrm. The idea was around a real "Bench of love" that will connect application experience and real meeting.',
             link: 'https://github.com/yatskeech/bench-of-love',
-            company: { connect: { id: degtiarovCompanyId } },
+        },
+        {
+            name: 'Quiplash Copy',
+            description:
+                'Educational online party game inspired by Jackbox Quiplash, with real-time multiplayer gameplay and a browser-based client.',
+            link: 'https://github.com/Navi-Friend/quiplash-copy',
+        },
+        {
+            name: 'Calculator Language',
+            description:
+                'Educational mathematical programming language inspired by MATLAB and Wolfram, with a custom interpreter and a browser-based IDE using HTTP streaming.',
+            link: 'https://github.com/Navi-Friend/calculator-language',
+        },
+        {
+            name: 'Nest Auth',
+            description:
+                'Authentication training project featuring two-factor authentication with OTP, email confirmation, OAuth 2.0, password updates, and brute-force protection.',
+            link: 'https://github.com/Navi-Friend/nest-auth',
+        },
+        {
+            name: 'MMF Schedule Parser',
+            description:
+                'Telegram bot for parsing and managing the BSU Faculty of Mechanics and Mathematics schedule, with iCalendar export, class reminders, change tracking, metrics, and health checks.',
+            link: 'https://github.com/Navi-Friend/mmf-shedule-parser',
         },
     ];
 }
