@@ -17,6 +17,7 @@ Backend цифровой визитки на NestJS, Prisma, PostgreSQL и Graph
 Для запуска в Docker скопируйте пример окружения:
 
 ```bash
+cd .\digital-card\
 cp .env.example .env
 docker compose up -d --build
 ```
